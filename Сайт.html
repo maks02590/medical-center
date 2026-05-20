@@ -2,8 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Медицинский центр «Здоровье+»</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Медицинский центр «Здоровье+» | Админ-панель</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -12,570 +14,631 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            transition: background 0.3s ease, color 0.2s ease;
             min-height: 100vh;
+        }
+
+        /* ========== СВЕТЛАЯ ТЕМА ========== */
+        body.light {
+            background: linear-gradient(145deg, #f0f4ff 0%, #e9eefc 100%);
+            color: #0f172a;
+        }
+        body.light .premium-header,
+        body.light .tabs-premium,
+        body.light .tab-content,
+        body.light .doctor-card,
+        body.light .stat-card,
+        body.light .auth-modal {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(8px);
+            border-color: rgba(99, 102, 241, 0.2);
+            color: #0f172a;
+        }
+        body.light .doctor-card { background: white; }
+        body.light .doctor-name { color: #1e293b; }
+        body.light .doctor-spec { color: #6d28d9; }
+        body.light .doctor-service { color: #475569; }
+        body.light .doctor-avatar { background: linear-gradient(145deg, #eef2ff, #e0e7ff); }
+        body.light .price-tag { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0c0a2a; }
+        body.light input, body.light select { background: #ffffff; border-color: #e2e8f0; color: #0f172a; }
+        body.light th { background: #f1f5f9; color: #4f46e5; }
+        body.light td { border-bottom-color: #e2e8f0; color: #1e293b; }
+        body.light .footer { border-top-color: #e2e8f0; color: #5b6e8c; }
+        body.light .bg-dark-luxury, body.light .noise { display: none; }
+
+        /* ========== ТЁМНАЯ ТЕМА ========== */
+        body.dark {
+            background: #0a0c15;
+            color: #eef2ff;
+        }
+        body.dark .premium-header,
+        body.dark .tabs-premium,
+        body.dark .tab-content,
+        body.dark .stat-card {
+            background: rgba(18, 22, 40, 0.85);
+            backdrop-filter: blur(12px);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        body.dark .doctor-card {
+            background: rgba(25, 30, 48, 0.9);
+            border-color: rgba(99,102,241,0.3);
+        }
+        body.dark .doctor-name { color: #f1f5f9; }
+        body.dark .doctor-spec { color: #a78bfa; }
+        body.dark .doctor-service { color: #94a3b8; }
+        body.dark .doctor-avatar { background: linear-gradient(145deg, #1e1f3a, #13172b); }
+        body.dark .price-tag { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0c0a2a; }
+        body.dark input, body.dark select { background: #0f1222; border-color: #334155; color: #f1f5f9; }
+        body.dark th { background: #0c0f1c; color: #a78bfa; }
+        body.dark td { border-bottom-color: #1e293b; color: #e2e8f0; }
+        body.dark .footer { border-top-color: #1e293b; color: #5b6e8c; }
+        body.dark .auth-modal { background: #111827; border-color: #4f46e5; }
+        body.dark .bg-dark-luxury { display: block; position: fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(ellipse at 30% 40%, #141824 0%, #07090f 100%); z-index: -2; }
+        body.dark .noise { display: block; position: fixed; top:0; left:0; width:100%; height:100%; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: -1; }
+
+        /* анимации */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes rotateSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rotating-icon {
+            animation: rotateSlow 12s linear infinite;
+            display: inline-block;
+        }
+        .floating-card {
+            transition: all 0.3s ease;
+        }
+        .floating-card:hover {
+            animation: float 0.6s ease-in-out;
+            box-shadow: 0 25px 35px -12px rgba(99,102,241,0.4);
+        }
+        .pulse-btn:active {
+            animation: pulse 0.2s ease;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px 28px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* Шапка */
-        .header {
-            background: white;
-            border-radius: 15px;
-            padding: 20px 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        .premium-header {
+            border-radius: 2rem;
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
         }
 
-        .logo h1 {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 28px;
-        }
-
-        .logo p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        /* Вкладки */
-        .tabs {
+        .brand {
             display: flex;
-            gap: 10px;
-            background: white;
-            border-radius: 15px;
-            padding: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            align-items: center;
+            gap: 18px;
         }
 
-        .tab-btn {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            background: #f0f0f0;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .tab-btn:hover:not(.active) {
-            background: #e0e0e0;
-        }
-
-        /* Содержимое вкладок */
-        .tab-content {
-            display: none;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Карточки врачей */
-        .doctors-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .doctor-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .doctor-card:hover {
-            transform: translateY(-5px);
-            border-color: #667eea;
-        }
-
-        .doctor-card.selected {
-            border-color: #667eea;
-            background: linear-gradient(135deg, #667eea10, #764ba210);
-        }
-
-        .doctor-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 50%;
+        .brand-icon {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            width: 56px;
+            height: 56px;
+            border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 40px;
+            font-size: 28px;
+            box-shadow: 0 10px 20px -5px rgba(99,102,241,0.4);
             color: white;
         }
 
-        .doctor-name {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
+        .logo h1 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
+        body.light .logo h1 { background: linear-gradient(135deg, #1e1b4b, #5b21b6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        body.dark .logo h1 { background: linear-gradient(135deg, #ffffff, #c7d2fe); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-        .doctor-spec {
-            color: #667eea;
-            margin: 5px 0;
-        }
+        .logo p { font-size: 0.75rem; font-weight: 500; }
+        body.light .logo p { color: #5b6e8c; }
+        body.dark .logo p { color: #94a3b8; }
 
-        .doctor-price {
-            font-size: 20px;
-            font-weight: bold;
-            color: #764ba2;
-            margin: 10px 0;
-        }
-
-        .btn-select {
-            background: #667eea;
-            color: white;
+        .theme-toggle {
+            background: rgba(100, 100, 140, 0.2);
             border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
+            border-radius: 40px;
+            padding: 8px 16px;
+            display: flex;
+            gap: 8px;
             cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Форма записи */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
             font-weight: 600;
-            color: #333;
+            backdrop-filter: blur(4px);
+        }
+        body.light .theme-toggle { background: rgba(0,0,0,0.05); color: #1e293b; }
+        body.dark .theme-toggle { background: rgba(255,255,255,0.1); color: #cbd5e1; }
+
+        .tabs-premium {
+            display: flex;
+            gap: 12px;
+            border-radius: 3rem;
+            padding: 8px 20px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
         }
 
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            border-color: #667eea;
-            outline: none;
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+        .tab-btn {
+            padding: 12px 28px;
             border: none;
-            padding: 14px 30px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: bold;
+            background: transparent;
+            border-radius: 2rem;
+            font-weight: 600;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        body.light .tab-btn { color: #334155; }
+        body.dark .tab-btn { color: #cbd5e1; }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            box-shadow: 0 6px 14px rgba(99,102,241,0.4);
+        }
+
+        .tab-content {
+            display: none;
+            border-radius: 2rem;
+            padding: 32px 34px;
+        }
+        .tab-content.active { display: block; }
+
+        .doctors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 28px;
+            margin-top: 20px;
+        }
+
+        .doctor-card {
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            transition: 0.25s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .price-tag {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        .doctor-avatar {
+            width: 75px;
+            height: 75px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            margin-bottom: 16px;
+        }
+
+        .doctor-name { font-size: 1.2rem; font-weight: 700; }
+        .doctor-spec { font-weight: 600; font-size: 0.8rem; margin: 6px 0; }
+        .doctor-service { font-size: 0.85rem; }
+        .btn-select {
+            border: none;
+            padding: 10px;
+            border-radius: 2rem;
+            font-weight: 600;
             width: 100%;
+            margin-top: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #4f46e5;
+            color: white;
         }
+        .btn-select:hover { background: #7c3aed; }
 
-        /* Таблицы */
-        table {
+        .row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .form-group { margin-bottom: 22px; }
+        .form-group label { font-weight: 600; display: block; margin-bottom: 8px; }
+        input, select { width: 100%; padding: 14px 18px; border-radius: 1.2rem; font-size: 0.95rem; transition: 0.2s; border-width: 1.5px; border-style: solid; }
+        input:focus, select:focus { border-color: #8b5cf6; outline: none; box-shadow: 0 0 0 2px rgba(139,92,246,0.3); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border: none;
+            padding: 14px;
+            border-radius: 2rem;
+            font-weight: bold;
+            color: white;
             width: 100%;
-            border-collapse: collapse;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
         }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 10px 20px -5px rgba(99,102,241,0.4); }
 
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background: #f8f9fa;
-            color: #667eea;
-        }
+        .table-wrapper { overflow-x: auto; border-radius: 1.2rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 16px 12px; font-weight: 700; }
+        td { padding: 14px 12px; vertical-align: middle; }
 
         .status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
         }
+        .status-pending { background: #fef3c7; color: #b45309; }
+        .status-confirmed { background: #dcfce7; color: #15803d; }
+        .status-rejected { background: #fee2e2; color: #b91c1c; }
+        .status-completed { background: #e0e7ff; color: #3730a3; }
 
-        .status-planned { background: #fff3cd; color: #856404; }
-        .status-completed { background: #d4edda; color: #155724; }
-        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .admin-action-btn { padding: 6px 14px; border-radius: 2rem; border: none; font-weight: 600; cursor: pointer; margin: 0 4px; }
+        .confirm-btn { background: #10b981; color: white; }
+        .reject-btn { background: #ef4444; color: white; }
+        .complete-btn { background: #8b5cf6; color: white; border: none; padding: 6px 14px; border-radius: 2rem; cursor: pointer; }
 
-        .delete-btn, .complete-btn {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 0 2px;
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; margin: 30px 0; }
+        .stat-card { border-radius: 1.5rem; padding: 1.3rem; text-align: center; }
+        .admin-only { display: none; }
+        .footer { text-align: center; margin-top: 45px; font-size: 0.8rem; padding-top: 25px; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
         }
-        .complete-btn { background: #28a745; color: white; }
-        .delete-btn { background: #dc3545; color: white; }
+        .modal-overlay.active { visibility: visible; opacity: 1; }
+        .auth-modal { max-width: 460px; width: 90%; border-radius: 2rem; padding: 2rem; border: 1px solid #4f46e5; }
+        .auth-modal h3 { font-size: 1.8rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #a78bfa, #c084fc); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-        /* Карточки статистики */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .stat-card h3 { font-size: 14px; opacity: 0.9; margin-bottom: 10px; }
-        .stat-card .value { font-size: 32px; font-weight: bold; }
-
-        .footer {
-            text-align: center;
-            color: white;
-            margin-top: 30px;
-            padding: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .row { grid-template-columns: 1fr; }
-            .doctors-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 700px) { .container { padding: 16px; } .row-2col { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body>
+<body class="dark">
+<div class="bg-dark-luxury"></div>
+<div class="noise"></div>
 <div class="container">
-    <!-- Шапка -->
-    <div class="header">
-        <div class="logo">
-            <h1>🏥 Медицинский центр «Здоровье+»</h1>
-            <p>Ваше здоровье — наша забота</p>
+    <div class="premium-header">
+        <div class="brand">
+            <div class="brand-icon"><i class="fas fa-heartbeat rotating-icon"></i></div>
+            <div class="logo">
+                <h1>🏥 Медицинский центр «Здоровье+»</h1>
+                <p>Ваше здоровье — наша забота</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+            <button id="themeSwitcher" class="theme-toggle"><i class="fas fa-sun"></i> / <i class="fas fa-moon"></i> Тема</button>
+            <div class="auth-panel" id="authPanel"></div>
         </div>
     </div>
 
-    <!-- Вкладки -->
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('doctors')">👨‍⚕️ Врачи и услуги</button>
-        <button class="tab-btn" onclick="switchTab('appointment')">📝 Запись на приём</button>
-        <button class="tab-btn" onclick="switchTab('records')">📋 Мои записи</button>
-        <button class="tab-btn" onclick="switchTab('reports')">📊 Отчёты</button>
-    </div>
+    <div class="tabs-premium" id="tabsContainer"></div>
 
-    <!-- Вкладка 1: Врачи -->
-    <div id="doctors" class="tab-content active">
-        <h2 style="color:#667eea; margin-bottom:20px">👨‍⚕️ Наши специалисты</h2>
+    <div id="doctorsTab" class="tab-content active">
+        <h2 style="margin-bottom: 24px;"><i class="fas fa-stethoscope rotating-icon"></i> Наши специалисты</h2>
         <div class="doctors-grid" id="doctorsGrid"></div>
     </div>
 
-    <!-- Вкладка 2: Запись на приём -->
-    <div id="appointment" class="tab-content">
-        <h2 style="color:#667eea; margin-bottom:20px">📝 Запись на приём</h2>
-        <div class="row">
-            <div class="form-group">
-                <label>ФИО пациента *</label>
-                <input type="text" id="patientName" placeholder="Иванов Иван Иванович">
-            </div>
-            <div class="form-group">
-                <label>Телефон *</label>
-                <input type="tel" id="phone" placeholder="+7 (___) ___-__-__">
-            </div>
+    <div id="appointmentTab" class="tab-content">
+        <h2 style="margin-bottom: 20px;"><i class="fas fa-calendar-check"></i> Новая запись на приём</h2>
+        <div class="row-2col">
+            <div class="form-group"><label>ФИО пациента *</label><input type="text" id="patientName" placeholder="Иванов Иван Иванович"></div>
+            <div class="form-group"><label>Телефон *</label><input type="tel" id="phone" placeholder="+7 999 123-45-67"></div>
         </div>
-        <div class="row">
-            <div class="form-group">
-                <label>Выбранный врач</label>
-                <input type="text" id="selectedDoctor" readonly style="background:#f0f0f0">
-            </div>
-            <div class="form-group">
-                <label>Услуга</label>
-                <input type="text" id="selectedService" readonly style="background:#f0f0f0">
-            </div>
+        <div class="row-2col">
+            <div class="form-group"><label>Выбранный врач</label><input type="text" id="selectedDoctor" readonly></div>
+            <div class="form-group"><label>Услуга</label><input type="text" id="selectedService" readonly></div>
         </div>
-        <div class="row">
-            <div class="form-group">
-                <label>Стоимость</label>
-                <input type="text" id="selectedPrice" readonly style="background:#f0f0f0">
-            </div>
-            <div class="form-group">
-                <label>Дата приёма *</label>
-                <input type="date" id="date">
-            </div>
+        <div class="row-2col">
+            <div class="form-group"><label>Стоимость (₽)</label><input type="text" id="selectedPrice" readonly style="font-weight:bold;"></div>
+            <div class="form-group"><label>Дата приёма</label><input type="date" id="date"></div>
         </div>
-        <div class="form-group">
-            <label>Время приёма *</label>
-            <select id="time">
-                <option value="09:00">09:00</option><option value="09:30">09:30</option>
-                <option value="10:00">10:00</option><option value="10:30">10:30</option>
-                <option value="11:00">11:00</option><option value="11:30">11:30</option>
-                <option value="12:00">12:00</option><option value="12:30">12:30</option>
-                <option value="13:00">13:00</option><option value="13:30">13:30</option>
-                <option value="14:00">14:00</option><option value="14:30">14:30</option>
-                <option value="15:00">15:00</option><option value="15:30">15:30</option>
-                <option value="16:00">16:00</option>
-            </select>
-        </div>
-        <button class="btn" onclick="addAppointment()">✍️ Записаться</button>
+        <div class="form-group"><label>Время</label><select id="time"></select></div>
+        <button class="btn-primary pulse-btn" onclick="addAppointment()"><i class="fas fa-pen-alt"></i> Отправить заявку</button>
+        <p style="margin-top: 16px; font-size: 13px; opacity:0.7;"><i class="fas fa-clock"></i> Администратор подтвердит запись в ближайшее время.</p>
     </div>
 
-    <!-- Вкладка 3: Мои записи -->
-    <div id="records" class="tab-content">
-        <h2 style="color:#667eea; margin-bottom:20px">📋 Список записей</h2>
-        <table id="appointmentsTable">
-            <thead><tr><th>Пациент</th><th>Телефон</th><th>Врач</th><th>Услуга</th><th>Цена</th><th>Дата</th><th>Время</th><th>Статус</th><th></th></tr></thead>
-            <tbody id="appointmentsBody"><tr><td colspan="9" style="text-align:center">Пока нет записей</td></tr></tbody>
-        </table>
-    </div>
-
-    <!-- Вкладка 4: Отчёты (аналог запроса "Доходы за период") -->
-    <div id="reports" class="tab-content">
-        <h2 style="color:#667eea; margin-bottom:20px">📊 Отчёт по доходам (SQL-запрос: объединение таблиц)</h2>
-        <div class="row">
-            <div class="form-group">
-                <label>📅 Дата начала периода *</label>
-                <input type="date" id="reportStart">
-            </div>
-            <div class="form-group">
-                <label>📅 Дата окончания периода *</label>
-                <input type="date" id="reportEnd">
-            </div>
+    <div id="adminPanelTab" class="tab-content admin-only">
+        <h2 style="margin-bottom: 24px;"><i class="fas fa-shield-alt"></i> Админ панель: управление заявками</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>Пациент</th><th>Телефон</th><th>Врач</th><th>Услуга</th><th>Цена</th><th>Дата</th><th>Время</th><th>Статус</th><th>Действия</th></tr></thead>
+                <tbody id="adminRequestsBody"></tbody>
+            </table>
         </div>
-        <button class="btn" onclick="generateReport()">📈 Сформировать отчёт</button>
-        
-        <!-- Статистика -->
-        <div class="stats" id="statsSection" style="margin-top: 30px;"></div>
-        
-        <!-- Таблица детализации -->
-        <h3 style="margin:20px 0 10px 0">Детализация оказанных услуг</h3>
-        <table id="reportTable">
-            <thead><tr><th>Дата</th><th>Пациент</th><th>Врач</th><th>Специальность</th><th>Услуга</th><th>Сумма (руб.)</th><th>Способ оплаты</th></tr></thead>
-            <tbody id="reportBody"><tr><td colspan="7" style="text-align:center">Выберите период и нажмите «Сформировать отчёт»</td></tr></tbody>
-        </table>
+        <div style="margin-top: 45px;">
+            <h3><i class="fas fa-chart-line"></i> Отчёт по доходам (оказанные услуги)</h3>
+            <div style="display: flex; gap: 20px; flex-wrap:wrap; margin:25px 0">
+                <div class="form-group" style="flex:1"><label>Начало</label><input type="date" id="reportStart"></div>
+                <div class="form-group" style="flex:1"><label>Конец</label><input type="date" id="reportEnd"></div>
+                <button class="btn-primary" style="width:auto; padding:0 32px;" onclick="generateReport()">Сформировать</button>
+            </div>
+            <div id="statsSection" class="stats-grid"></div>
+            <h3>Детализация проведённых приёмов</h3>
+            <div class="table-wrapper"><table><thead><tr><th>Дата</th><th>Пациент</th><th>Врач</th><th>Услуга</th><th>Сумма</th><th>Оплата</th></tr></thead><tbody id="reportBody"></tbody></table></div>
+        </div>
     </div>
+    <div class="footer">© 2026 Медицинский центр «Здоровье+» — забота о каждом пациенте</div>
+</div>
 
-    <div class="footer">
-        <p>© 2026 Медицинский центр «Здоровье+»</p>
+<div id="authModal" class="modal-overlay">
+    <div class="auth-modal">
+        <h3 id="modalTitle">Вход в систему</h3>
+        <div class="input-group"><label>📱 Номер телефона</label><input type="tel" id="loginPhone" placeholder="admin или +7..."></div>
+        <div class="input-group"><label>🔒 Пароль</label><input type="password" id="loginPassword" placeholder="••••••"></div>
+        <button class="auth-btn" id="submitAuthBtn" style="background:linear-gradient(135deg,#6366f1,#a855f7); width:100%; padding:12px; border-radius:2rem; border:none; font-weight:bold; color:white;">Войти</button>
+        <div class="switch-mode" id="switchModeBtn" style="text-align:center; margin-top:18px; cursor:pointer;">Нет аккаунта? Зарегистрироваться</div>
     </div>
 </div>
 
 <script>
-    // Данные врачей (сущность "Врачи" + "Специальности" + "Услуги")
+    // ========== ДАННЫЕ ==========
+    let users = [
+        { phone: "admin", password: "123", role: "admin", name: "Администратор" }
+    ];
+    let currentUser = null;
+    let appointments = [];
+    let renderedServices = [];
+    let selectedDoctorObj = null;
+
     const doctorsData = [
-        { id: 1, name: "Иванова Мария Петровна", spec: "Терапевт", price: 1500, service: "Приём терапевта", avatar: "🩺" },
-        { id: 2, name: "Смирнов Алексей Владимирович", spec: "Кардиолог", price: 2000, service: "Консультация кардиолога", avatar: "❤️" },
-        { id: 3, name: "Кузнецова Елена Дмитриевна", spec: "Невролог", price: 1800, service: "Консультация невролога", avatar: "🧠" },
-        { id: 4, name: "Соколов Дмитрий Андреевич", spec: "Стоматолог", price: 3500, service: "Лечение кариеса", avatar: "🦷" },
-        { id: 5, name: "Морозова Анна Сергеевна", spec: "УЗИ-диагност", price: 2200, service: "УЗИ брюшной полости", avatar: "📊" }
+        { id: 1, name: "Иванова Мария Петровна", spec: "Терапевт", price: 1600, service: "Первичный приём", icon: "fas fa-stethoscope" },
+        { id: 2, name: "Смирнов Алексей Владимирович", spec: "Кардиолог", price: 2200, service: "ЭКГ + консультация", icon: "fas fa-heartbeat" },
+        { id: 3, name: "Кузнецова Елена Дмитриевна", spec: "Невролог", price: 1950, service: "Консультация невролога", icon: "fas fa-brain" },
+        { id: 4, name: "Соколов Дмитрий Андреевич", spec: "Стоматолог", price: 3900, service: "Лечение кариеса", icon: "fas fa-tooth" },
+        { id: 5, name: "Морозова Анна Сергеевна", spec: "УЗИ-диагност", price: 2500, service: "УЗИ брюшной полости", icon: "fas fa-binoculars" }
     ];
 
-    // Хранилище записей (сущность "Записи")
-    let appointments = [];
+    // ========== ТЕМА ==========
+    const themeSwitcher = document.getElementById('themeSwitcher');
+    function setTheme(theme) {
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add(theme);
+        localStorage.setItem('clinic_theme', theme);
+    }
+    themeSwitcher.addEventListener('click', () => {
+        const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
+        setTheme(newTheme);
+    });
+    const savedTheme = localStorage.getItem('clinic_theme') || 'dark';
+    setTheme(savedTheme);
 
-    // Оказанные услуги (сущность "Оказанные услуги") - для отчёта
-    let renderedServices = [];
+    // ========== АВТОРИЗАЦИЯ ==========
+    const modal = document.getElementById('authModal');
+    let isLoginMode = true;
+    function openModal() { modal.classList.add('active'); }
+    function closeModal() { modal.classList.remove('active'); }
+    function updateModalUI() {
+        document.getElementById('modalTitle').innerText = isLoginMode ? "Вход в «Здоровье+»" : "Регистрация пациента";
+        document.getElementById('submitAuthBtn').innerText = isLoginMode ? "Войти" : "Зарегистрироваться";
+        document.getElementById('switchModeBtn').innerText = isLoginMode ? "Нет аккаунта? Зарегистрироваться" : "Уже есть аккаунт? Войти";
+        document.getElementById('switchModeBtn').style.color = document.body.classList.contains('dark') ? '#a78bfa' : '#6366f1';
+    }
+    function handleAuth() {
+        const phone = document.getElementById('loginPhone').value.trim();
+        const pass = document.getElementById('loginPassword').value.trim();
+        if (!phone || !pass) { alert("Заполните телефон и пароль"); return; }
+        if (isLoginMode) {
+            const user = users.find(u => u.phone === phone && u.password === pass);
+            if (!user) { alert("Неверные данные"); return; }
+            currentUser = { phone: user.phone, role: user.role, name: user.name };
+            closeModal();
+            updateUIAfterAuth();
+        } else {
+            if (users.find(u => u.phone === phone)) { alert("Телефон уже занят"); return; }
+            users.push({ phone, password: pass, role: "patient", name: phone });
+            currentUser = { phone, role: "patient", name: phone };
+            closeModal();
+            updateUIAfterAuth();
+            alert("Регистрация успешна!");
+        }
+    }
+    function logout() {
+        currentUser = null;
+        selectedDoctorObj = null;
+        document.getElementById('selectedDoctor').value = '';
+        document.getElementById('selectedService').value = '';
+        document.getElementById('selectedPrice').value = '';
+        updateUIAfterAuth();
+    }
+    function updateUIAfterAuth() {
+        const panel = document.getElementById('authPanel');
+        if (currentUser) {
+            const roleLabel = currentUser.role === 'admin' ? '👑 Администратор' : '🧑‍⚕️ Пациент';
+            panel.innerHTML = `<div style="display:flex; align-items:center; gap:12px; padding:6px 20px; border-radius:50px; background:rgba(100,100,140,0.15);"><span><i class="fas fa-user-circle"></i> ${currentUser.role === 'admin' ? 'Admin' : currentUser.phone}</span><span style="padding:4px 12px; border-radius:30px; background:rgba(0,0,0,0.1);">${roleLabel}</span><button onclick="logout()" style="background:none; border:none; color:#f87171; font-weight:bold; cursor:pointer;"><i class="fas fa-sign-out-alt"></i> Выйти</button></div>`;
+        } else {
+            panel.innerHTML = `<button id="showAuthBtn" style="background:linear-gradient(135deg,#6366f1,#a855f7); border:none; padding:10px 28px; border-radius:40px; color:white; font-weight:bold;"><i class="fas fa-sign-in-alt"></i> Вход / Регистрация</button>`;
+            document.getElementById('showAuthBtn')?.addEventListener('click', () => { isLoginMode = true; updateModalUI(); openModal(); });
+        }
+        renderTabs();
+        const adminDiv = document.getElementById('adminPanelTab');
+        if (currentUser?.role === 'admin') adminDiv.classList.remove('admin-only');
+        else adminDiv.classList.add('admin-only');
+        renderAdminRequests();
+        loadDoctors();
+        if (document.querySelector('.tab-content.active')?.id === 'adminPanelTab' && currentUser?.role !== 'admin') switchTab('doctorsTab');
+    }
 
-    // Загрузка врачей на вкладку
+    function renderTabs() {
+        const container = document.getElementById('tabsContainer');
+        let tabs = [
+            { id: 'doctorsTab', icon: 'fa-user-md', label: 'Врачи' },
+            { id: 'appointmentTab', icon: 'fa-calendar-plus', label: 'Запись' }
+        ];
+        if (currentUser?.role === 'admin') {
+            tabs.push({ id: 'adminPanelTab', icon: 'fa-shield-alt', label: 'Админ панель' });
+        }
+        container.innerHTML = tabs.map(tab => `<button class="tab-btn" data-tab="${tab.id}" onclick="switchTab('${tab.id}')"><i class="fas ${tab.icon}"></i> ${tab.label}</button>`).join('');
+        const activeNow = document.querySelector('.tab-content.active')?.id || 'doctorsTab';
+        document.querySelectorAll('.tab-btn').forEach(btn => { if (btn.getAttribute('data-tab') === activeNow) btn.classList.add('active'); else btn.classList.remove('active'); });
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(btn => { if (btn.getAttribute('data-tab') === tabId) btn.classList.add('active'); else btn.classList.remove('active'); });
+        if (tabId === 'adminPanelTab' && currentUser?.role === 'admin') { renderAdminRequests(); generateReport(); }
+    }
+
     function loadDoctors() {
         const grid = document.getElementById('doctorsGrid');
+        if (!grid) return;
         grid.innerHTML = doctorsData.map(doc => `
-            <div class="doctor-card" onclick="selectDoctor(${doc.id})">
-                <div class="doctor-avatar">${doc.avatar}</div>
+            <div class="doctor-card floating-card" onclick="selectDoctor(${doc.id})">
+                <div class="price-tag"><i class="fas fa-ruble-sign"></i> ${doc.price.toLocaleString()} ₽</div>
+                <div class="doctor-avatar"><i class="${doc.icon} rotating-icon" style="font-size: 38px;"></i></div>
                 <div class="doctor-name">${doc.name}</div>
                 <div class="doctor-spec">${doc.spec}</div>
-                <div class="doctor-price">${doc.price.toLocaleString()} ₽</div>
-                <div class="doctor-service">${doc.service}</div>
+                <div class="doctor-service"><i class="fas fa-stethoscope"></i> ${doc.service}</div>
                 <button class="btn-select">Выбрать для записи</button>
             </div>
         `).join('');
     }
 
-    let selectedDoctorObj = null;
-
     function selectDoctor(id) {
+        if (!currentUser) { alert("Войдите или зарегистрируйтесь"); openModal(); return; }
         selectedDoctorObj = doctorsData.find(d => d.id === id);
         document.getElementById('selectedDoctor').value = selectedDoctorObj.name;
         document.getElementById('selectedService').value = selectedDoctorObj.service;
         document.getElementById('selectedPrice').value = selectedDoctorObj.price.toLocaleString() + ' ₽';
-        switchTab('appointment');
-        // Подсветка выбранного врача
-        document.querySelectorAll('.doctor-card').forEach((card, i) => {
-            if (doctorsData[i].id === id) card.classList.add('selected');
-            else card.classList.remove('selected');
-        });
+        switchTab('appointmentTab');
     }
 
-    // Добавление записи
     function addAppointment() {
-        const patientName = document.getElementById('patientName').value.trim();
+        if (!currentUser) { alert("Войдите в систему"); openModal(); return; }
+        if (!selectedDoctorObj) { alert("Выберите врача"); return; }
+        const name = document.getElementById('patientName').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
-
-        if (!patientName || !phone || !date || !selectedDoctorObj) {
-            alert('Заполните ФИО, телефон, дату и выберите врача!');
-            return;
-        }
-
+        if (!name || !phone || !date) { alert("Заполните ФИО, телефон и дату"); return; }
         const today = new Date().toISOString().split('T')[0];
-        if (date < today) { alert('Нельзя записаться на прошедшую дату!'); return; }
-
-        // Проверка конфликта
-        const conflict = appointments.find(a => a.date === date && a.time === time && a.doctorName === selectedDoctorObj.name);
-        if (conflict) { alert('Это время уже занято! Выберите другое.'); return; }
-
+        if (date < today) { alert("Нельзя выбрать прошедшую дату"); return; }
+        const conflict = appointments.find(a => a.date === date && a.time === time && a.doctorName === selectedDoctorObj.name && a.status !== 'rejected');
+        if (conflict) { alert("Это время уже занято"); return; }
         const newApp = {
-            id: Date.now(),
-            patientName, phone,
-            doctorName: selectedDoctorObj.name,
-            doctorSpec: selectedDoctorObj.spec,
-            serviceName: selectedDoctorObj.service,
-            price: selectedDoctorObj.price,
-            date, time,
-            status: 'Запланирована'
+            id: Date.now(), patientName: name, phone, doctorName: selectedDoctorObj.name,
+            doctorSpec: selectedDoctorObj.spec, serviceName: selectedDoctorObj.service,
+            price: selectedDoctorObj.price, date, time, status: 'pending'
         };
         appointments.push(newApp);
-        renderAppointments();
-        alert(`✓ ${patientName}, Вы записаны к ${selectedDoctorObj.name} на ${date} в ${time}`);
-        
-        // Очистка формы
+        alert("✓ Заявка отправлена! Администратор подтвердит запись.");
         document.getElementById('patientName').value = '';
         document.getElementById('phone').value = '';
         document.getElementById('date').value = '';
+        if (currentUser?.role === 'admin') renderAdminRequests();
     }
 
-    // Отображение записей
-    function renderAppointments() {
-        const tbody = document.getElementById('appointmentsBody');
-        if (appointments.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">Пока нет записей</td></tr>';
-            return;
-        }
-        tbody.innerHTML = appointments.map(app => `
+    function renderAdminRequests() {
+        const tbody = document.getElementById('adminRequestsBody');
+        if (!tbody || currentUser?.role !== 'admin') return;
+        const active = appointments.filter(a => a.status !== 'rejected' && a.status !== 'completed');
+        if (active.length === 0) { tbody.innerHTML = '<tr><td colspan="9">Нет активных заявок</td></tr>'; return; }
+        tbody.innerHTML = active.map(app => `
             <tr>
-                <td>${app.patientName}</td>
-                <td>${app.phone}</td>
-                <td>${app.doctorName}</td>
-                <td>${app.serviceName}</td>
-                <td>${app.price.toLocaleString()} ₽</td>
-                <td>${app.date}</td>
-                <td>${app.time}</td>
-                <td><span class="status status-${app.status === 'Запланирована' ? 'planned' : (app.status === 'Проведена' ? 'completed' : 'cancelled')}">${app.status}</span></td>
-                <td>
-                    ${app.status === 'Запланирована' ? `<button class="complete-btn" onclick="completeAppointment(${app.id})">✓ Проведён</button>` : ''}
-                    <button class="delete-btn" onclick="deleteAppointment(${app.id})">✗ Отменить</button>
-                </td>
+                <td>${app.patientName}</td><td>${app.phone}</td><td>${app.doctorName}</td>
+                <td>${app.serviceName}</td><td>${app.price.toLocaleString()} ₽</td><td>${app.date}</td><td>${app.time}</td>
+                <td><span class="status ${app.status === 'pending' ? 'status-pending' : 'status-confirmed'}">${app.status === 'pending' ? '⏳ Ожидает' : '✅ Подтверждена'}</span></td>
+                <td>${app.status === 'pending' ? `<button class="admin-action-btn confirm-btn" onclick="changeStatus(${app.id}, 'confirmed')">✅ Подтвердить</button><button class="admin-action-btn reject-btn" onclick="changeStatus(${app.id}, 'rejected')">❌ Отклонить</button>` : `<button class="complete-btn" onclick="markAsCompleted(${app.id})">💰 Проведён</button>`}</td>
             </tr>
         `).join('');
     }
 
-    // Отметка о проведении (создание записи в "Оказанные услуги")
-    function completeAppointment(id) {
+    function changeStatus(id, newStatus) {
         const app = appointments.find(a => a.id === id);
-        if (app && app.status === 'Запланирована') {
-            app.status = 'Проведена';
-            renderedServices.push({
-                id: Date.now(),
-                appointmentId: app.id,
-                date: app.date,
-                patientName: app.patientName,
-                doctorName: app.doctorName,
-                doctorSpec: app.doctorSpec,
-                serviceName: app.serviceName,
-                amount: app.price,
-                paymentMethod: confirm('Оплата картой?') ? 'Карта' : 'Наличные'
-            });
-            renderAppointments();
-            alert(`Приём ${app.patientName} отмечен как проведённый. Сумма: ${app.price} руб.`);
-        }
+        if (app) { app.status = newStatus; renderAdminRequests(); alert(newStatus === 'confirmed' ? 'Запись подтверждена' : 'Запись отклонена'); }
     }
 
-    function deleteAppointment(id) {
-        if (confirm('Отменить запись?')) {
-            appointments = appointments.filter(a => a.id !== id);
-            renderAppointments();
-        }
+    function markAsCompleted(id) {
+        const app = appointments.find(a => a.id === id);
+        if (app && app.status === 'confirmed') {
+            if (confirm(`Отметить "${app.serviceName}" как оплаченную? Сумма ${app.price}₽`)) {
+                app.status = 'completed';
+                const method = confirm("Оплата картой? (OK=Карта, Отмена=Наличные)") ? "Карта" : "Наличные";
+                renderedServices.push({ id: Date.now(), date: app.date, patientName: app.patientName, doctorName: app.doctorName, serviceName: app.serviceName, amount: app.price, paymentMethod: method });
+                renderAdminRequests(); generateReport();
+                alert("Услуга проведена, доход добавлен.");
+            }
+        } else alert("Только подтверждённые записи можно завершить.");
     }
 
-    // Генерация отчёта «Доходы за период» (аналог SQL-запроса с объединением данных)
     function generateReport() {
+        if (!currentUser || currentUser.role !== 'admin') return;
         const start = document.getElementById('reportStart').value;
         const end = document.getElementById('reportEnd').value;
-        if (!start || !end) { alert('Выберите даты периода'); return; }
-
-        // Фильтр по дате (аналог WHERE ... BETWEEN)
+        if (!start || !end) { alert("Выберите период"); return; }
         const filtered = renderedServices.filter(s => s.date >= start && s.date <= end);
-        
-        // Статистика
-        const totalCash = filtered.filter(s => s.paymentMethod === 'Наличные').reduce((s, r) => s + r.amount, 0);
-        const totalCard = filtered.filter(s => s.paymentMethod === 'Карта').reduce((s, r) => s + r.amount, 0);
-        const total = totalCash + totalCard;
-
+        const totalCash = filtered.filter(s => s.paymentMethod === 'Наличные').reduce((s,r)=>s+r.amount,0);
+        const totalCard = filtered.filter(s => s.paymentMethod === 'Карта').reduce((s,r)=>s+r.amount,0);
+        const total = totalCash+totalCard;
         document.getElementById('statsSection').innerHTML = `
-            <div class="stat-card"><h3>💰 Всего доходов</h3><div class="value">${total.toLocaleString()} ₽</div></div>
-            <div class="stat-card"><h3>💵 Наличные</h3><div class="value">${totalCash.toLocaleString()} ₽</div></div>
-            <div class="stat-card"><h3>💳 Карта</h3><div class="value">${totalCard.toLocaleString()} ₽</div></div>
-            <div class="stat-card"><h3>📋 Всего услуг</h3><div class="value">${filtered.length}</div></div>
+            <div class="stat-card"><h3>💰 Общий доход</h3><div style="font-size:28px; font-weight:800;">${total.toLocaleString()} ₽</div></div>
+            <div class="stat-card"><h3>💵 Наличные</h3><div>${totalCash.toLocaleString()} ₽</div></div>
+            <div class="stat-card"><h3>💳 Безналичные</h3><div>${totalCard.toLocaleString()} ₽</div></div>
+            <div class="stat-card"><h3>📋 Услуг проведено</h3><div>${filtered.length}</div></div>
         `;
-
-        // Детализация
         const reportBody = document.getElementById('reportBody');
-        if (filtered.length === 0) {
-            reportBody.innerHTML = '<tr><td colspan="7" style="text-align:center">За выбранный период нет оказанных услуг</td></tr>';
-        } else {
-            reportBody.innerHTML = filtered.map(s => `
-                <tr>
-                    <td>${s.date}</td>
-                    <td>${s.patientName}</td>
-                    <td>${s.doctorName}</td>
-                    <td>${s.doctorSpec}</td>
-                    <td>${s.serviceName}</td>
-                    <td>${s.amount.toLocaleString()} ₽</td>
-                    <td>${s.paymentMethod}</td>
-                </tr>
-            `).join('');
-        }
+        if (!filtered.length) reportBody.innerHTML = '<tr><td colspan="6">Нет данных за период</td></tr>';
+        else reportBody.innerHTML = filtered.map(s => `<tr><td>${s.date}</td><td>${s.patientName}</td><td>${s.doctorName}</td><td>${s.serviceName}</td><td>${s.amount.toLocaleString()} ₽</td><td>${s.paymentMethod}</td></tr>`).join('');
     }
 
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        event.target.classList.add('active');
+    function fillTimeOptions() {
+        const select = document.getElementById('time');
+        if (select) { let times = []; for (let h = 9; h <= 16; h++) { times.push(`${h}:00`, `${h}:30`); } select.innerHTML = times.map(t => `<option value="${t}">${t}</option>`).join(''); }
     }
 
-    // Инициализация
-    loadDoctors();
-    document.getElementById('reportStart').value = new Date().toISOString().split('T')[0];
-    document.getElementById('reportEnd').value = new Date().toISOString().split('T')[0];
+    window.onload = () => {
+        fillTimeOptions();
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('reportStart').value = today;
+        document.getElementById('reportEnd').value = today;
+        updateUIAfterAuth();
+        loadDoctors();
+        document.getElementById('submitAuthBtn').addEventListener('click', handleAuth);
+        document.getElementById('switchModeBtn').addEventListener('click', () => { isLoginMode = !isLoginMode; updateModalUI(); });
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        updateModalUI();
+    };
 </script>
 </body>
 </html>
